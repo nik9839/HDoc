@@ -175,8 +175,11 @@ def qr_scan(data):
     response_dict = dict()
     response_dict['valid_qr'] = False
     response_dict['message'] = "Invalid Qr Code"
+
+    abc = Doctor.objects.get(contact_no=data['contact_no']).appointment_list.filter(
+        appointment_id=data['appointment_id']).first()
     if Doctor.objects.get(contact_no=data['contact_no']).appointment_list.filter(
-            Q(appointment_id=data['appointment_id']) & Q(on_date=current_date) & Q(status='booked')).exists():
+            Q(appointment_id=data['appointment_id']) & Q(on_date=current_date) & Q(status='Booked')).exists():
         appointment = Appointments.objects.get(appointment_id=data['appointment_id'])
         response_dict['patient_name'] = Patient.objects.get(contact_no=appointment.patient_id).name
         response_dict['patient_photo'] = Patient.objects.get(contact_no=appointment.patient_id).photo_url
