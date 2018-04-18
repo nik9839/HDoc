@@ -123,7 +123,7 @@ def login_doctor(request):
 
 @api_view(['GET', 'POST'])
 def cancel_appointment(request):
-    if Appointments.objects.filter(appointment_id="99b99ddb-a5df-40c5-9b4f-f33753b29409").exists():
+    if Appointments.objects.filter(appointment_id=request.data['appointment_id']).exists():
         appointment = Appointments.objects.get(appointment_id=request.data['appointment_id'])
         patientId = appointment.patient_id
         doctorId = appointment.doctor_id
