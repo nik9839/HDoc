@@ -11,10 +11,10 @@ class Appointments(models.Model):
     doctor_id = models.TextField()
     booked_on = models.DateTimeField()
     on_date = models.DateField()
-    estimated_time = models.DateTimeField(null=True,blank=True)
+    estimated_time = models.DateTimeField(null=True, blank=True)
     fees_paid = models.BooleanField()
     status = models.TextField()
-    booking_no = models.IntegerField(null=True,blank=True)
+    booking_no = models.IntegerField(null=True, blank=True)
 
 
 class Patient(models.Model):
@@ -23,6 +23,7 @@ class Patient(models.Model):
     email_id = models.EmailField(unique=True)
     appointment_list = models.ManyToManyField(Appointments, blank=True)
     contact_no = models.TextField(unique=True)
+    photo_url = models.TextField(blank=True)
 
 
 class Doctor(models.Model):
@@ -39,3 +40,5 @@ class Doctor(models.Model):
     doctor_terminal_password = models.TextField()
     independent_doctor = models.BooleanField()
     address = models.TextField()
+    photo_url = models.TextField(blank=True)
+    current_appointment_no = models.IntegerField(blank=True,null=True)
