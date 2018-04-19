@@ -10,6 +10,8 @@ import dateutil.parser
 
 
 def add_patient(data):
+    if data['photo_url'] == "":
+        data['photo_url'] = "https://dhqbrvplips7x.cloudfront.net/webchat/1.0.23/agent-e202505f.png"
     patient_obj = Patient(name=data['name'], age=data['age'], email_id=data['email_id'],
                           contact_no=data['contact_no'], photo_url=data['photo_url'])
     patient_obj.save()
@@ -141,8 +143,10 @@ def book_appointments(data):
 
 
 def doctor_get_todayappointment_list(data):
+    local_tz = pytz.timezone('Asia/Kolkata')
     doctor = Doctor.objects.get(contact_no=data['doctor_id'])
-    appointments_list = doctor.appointment_list.filter(on_date=timezone.now().date()).order_by('booked_on')
+    appointments_list = doctor.appointment_list.filter(on_date=timezone.now().astimezone(local_tz).date()).order_by(
+        'booked_on')
     response_dict = dict()
     items = []
 
