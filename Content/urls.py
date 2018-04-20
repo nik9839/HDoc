@@ -13,7 +13,9 @@ urlpatterns = [
     path('bookappointment', views.book_appointment_api),
     path('doctorlogin', views.login_doctor),
     path('cancelappointment',views.cancel_appointment),
-    path('doctorappointments',views.cancel_appointment),
+    path('doctorappointments',views.doctor_get_appointment),
+    path('futuredoctorappointments',views.doctor_get_appointment_future),
+    path('alldoctorappointments',views.doctor_get_appointment_all),
     path('terminallogin',views.terminal_login_api),
     path('qrscan',views.scanqr)
 

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import pytz
 from django.db.models import Q
 from rest_framework.decorators import api_view
@@ -11,7 +13,7 @@ import dateutil.parser
 
 def add_patient(data):
     if data['photo_url'] == "":
-        data['photo_url'] = "https://dhqbrvplips7x.cloudfront.net/webchat/1.0.23/agent-e202505f.png"
+        data['photo_url'] = "https://themes.gohugo.io/theme/hugo-geo//img/profile.png"
     patient_obj = Patient(name=data['name'], age=data['age'], email_id=data['email_id'],
                           contact_no=data['contact_no'], photo_url=data['photo_url'])
     patient_obj.save()
@@ -39,10 +41,13 @@ def add_doctor(data):
         data["independent_doctor"] = True
     else:
         data["independent_doctor"] = False
+
+    if data['photo_url'] == "":
+        data['photo_url'] = "https://cdn2.iconfinder.com/data/icons/rcons-user/32/male-shadow-fill-circle-512.png"
     doctor_obj = Doctor(name=data['name'], fees=data['fees'], email_id=data['email_id'],
                         contact_no=data['contact_no'], speciality=data['speciality'], age=data['age'],
                         experience=data['experience'], degree=data['degree'], doctor_terminal_login=id_generator(6),
-                        doctor_terminal_password=str(id_generator(8, string.digits)),
+                        doctor_terminal_password=data['password'],photo_url=data['photo_url'],
                         independent_doctor=data['independent_doctor'], address=data['address'])
     print("ok")
     doctor_obj.save()
@@ -75,7 +80,14 @@ def get_appointments(p_id):
         appointment_dict['on_date'] = appointment.on_date
         appointment_dict['doctor_photo'] = Doctor.objects.get(contact_no=appointment.doctor_id).photo_url
         appointment_dict['appointment_id'] = appointment.appointment_id
-        appointment_dict['estimated_time'] = timezone.now().astimezone(local_tz)
+        time = timezone.now().astimezone(local_tz).replace(hour=10, second=00, minute=00, microsecond=0)
+        est1 = time + timedelta(minutes=15 * appointment.booking_no)
+        est2 = appointment.booked_on
+        if est2 > est1:
+            a = est2 + timedelta(minutes=15)
+        else:
+            a = est1
+        appointment_dict['estimated_time'] = a
         appointment_dict['booking_no'] = appointment.booking_no
         appointment_dict['open'] = True
         appointment_dict['current_no'] = Doctor.objects.get(contact_no=appointment.doctor_id).current_appointment_no
@@ -156,6 +168,51 @@ def doctor_get_todayappointment_list(data):
         appointment_dict['patient_age'] = Patient.objects.get(contact_no=appointment.patient_id).age
         appointment_dict['patient_contact'] = Patient.objects.get(contact_no=appointment.patient_id).contact_no
         appointment_dict['patient_photo'] = Patient.objects.get(contact_no=appointment.patient_id).photo_url
+        appointment_dict['status'] = appointment.status
+        items.append(appointment_dict)
+
+    response_dict["items"] = items
+
+    return response_dict
+
+
+def doctor_get_futureappointment_list(data):
+    local_tz = pytz.timezone('Asia/Kolkata')
+    doctor = Doctor.objects.get(contact_no=data['doctor_id'])
+    appointments_list = doctor.appointment_list.filter(on_date__gt=timezone.now().astimezone(local_tz).date()).order_by(
+        'booked_on')
+    response_dict = dict()
+    items = []
+
+    for appointment in appointments_list:
+        appointment_dict = dict()
+        appointment_dict['patient_name'] = Patient.objects.get(contact_no=appointment.patient_id).name
+        appointment_dict['patient_age'] = Patient.objects.get(contact_no=appointment.patient_id).age
+        appointment_dict['patient_contact'] = Patient.objects.get(contact_no=appointment.patient_id).contact_no
+        appointment_dict['patient_photo'] = Patient.objects.get(contact_no=appointment.patient_id).photo_url
+        appointment_dict['status'] = appointment.status
+        items.append(appointment_dict)
+
+    response_dict["items"] = items
+
+    return response_dict
+
+
+def doctor_get_allappointment_list(data):
+    local_tz = pytz.timezone('Asia/Kolkata')
+    doctor = Doctor.objects.get(contact_no=data['doctor_id'])
+    appointments_list = doctor.appointment_list.order_by(
+        'booked_on')
+    response_dict = dict()
+    items = []
+
+    for appointment in appointments_list:
+        appointment_dict = dict()
+        appointment_dict['patient_name'] = Patient.objects.get(contact_no=appointment.patient_id).name
+        appointment_dict['patient_age'] = Patient.objects.get(contact_no=appointment.patient_id).age
+        appointment_dict['patient_contact'] = Patient.objects.get(contact_no=appointment.patient_id).contact_no
+        appointment_dict['patient_photo'] = Patient.objects.get(contact_no=appointment.patient_id).photo_url
+        appointment_dict['status'] = appointment.status
         items.append(appointment_dict)
 
     response_dict["items"] = items

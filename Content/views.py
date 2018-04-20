@@ -118,6 +118,8 @@ def login_doctor(request):
         if Doctor.objects.get(email_id=request.data['username']).doctor_terminal_password == request.data['password']:
             response_dict['exists'] = True
             response_dict['contact_no'] = Doctor.objects.get(email_id=request.data['username']).contact_no
+            response_dict['name'] = Doctor.objects.get(email_id=request.data['username']).name
+            response_dict['photo'] = Doctor.objects.get(email_id=request.data['username']).photo_url
     return Response(response_dict, status=HTTP_200_OK)
 
 
@@ -143,6 +145,16 @@ def cancel_appointment(request):
 @api_view(['GET', 'POST'])
 def doctor_get_appointment(request):
     return Response(doctor_get_todayappointment_list(request.data), status=HTTP_202_ACCEPTED)
+
+
+@api_view(['GET', 'POST'])
+def doctor_get_appointment_future(request):
+    return Response(doctor_get_futureappointment_list(request.data), status=HTTP_202_ACCEPTED)
+
+
+@api_view(['GET', 'POST'])
+def doctor_get_appointment_all(request):
+    return Response(doctor_get_allappointment_list(request.data), status=HTTP_202_ACCEPTED)
 
 
 @api_view(['GET', 'POST'])
