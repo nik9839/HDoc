@@ -13,6 +13,7 @@ import dateutil.parser
 
 def add_patient(data):
     print("ok")
+    print("ok")
     if data['photo_url'] == "":
         data['photo_url'] = "https://themes.gohugo.io/theme/hugo-geo//img/profile.png"
     patient_obj = Patient(name=data['name'], age=data['age'], email_id=data['email_id'],
