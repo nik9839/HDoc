@@ -48,7 +48,7 @@ def add_doctor(data):
                         contact_no=data['contact_no'], speciality=data['speciality'], age=data['age'],
                         experience=data['experience'], degree=data['degree'], doctor_terminal_login=id_generator(6),
                         doctor_terminal_password=data['password'],photo_url=data['photo_url'],
-                        independent_doctor=data['independent_doctor'], address=data['address'])
+                        independent_doctor=data['independent_doctor'], address=data['address'], current_appointment_no=0)
     print("ok")
     doctor_obj.save()
 
