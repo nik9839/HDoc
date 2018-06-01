@@ -6,7 +6,7 @@ pipeline {
                 sh 'python --version'
                 echo "hello world"
                 checkout scm
-                def customImage = docker.build("my-image:${env.BUILD_ID}")
+                docker.build("my-image:${env.BUILD_ID}")
 
             }
         }
