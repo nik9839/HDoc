@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh 'python --version'
                 echo "hello world"
-                sh 'apt-get update && \
+                sh ' sudo apt-get update && \
 apt-get -y install apt-transport-https \
      ca-certificates \
      curl \
