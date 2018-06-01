@@ -5,9 +5,7 @@ pipeline {
             steps {
                 sh 'python --version'
                 echo "hello world"
-                checkout scm
-                script {
-                    apt-get update && \
+                sh 'apt-get update && \
 apt-get -y install apt-transport-https \
      ca-certificates \
      curl \
@@ -19,7 +17,9 @@ add-apt-repository \
    $(lsb_release -cs) \
    stable" && \
 apt-get update && \
-apt-get -y install docker-ce
+apt-get -y install docker-ce'
+                checkout scm
+                script {
                     def customimage = docker.build("my-image:${env.BUILD_ID}")
                 }
             }
