@@ -5,7 +5,7 @@ pipeline {
             steps {
                 checkout scm
                 script {
-                    docker.withRegistry('https://hub.docker.com/r/nikhil1996/hdoc_image/') {
+                    docker.withRegistry('https://registry.hub.docker.com/r/nikhil1996/hdoc_image/') {
 
                              def customImage = docker.build("my-image:${env.BUILD_ID}")
 
