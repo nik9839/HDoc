@@ -1,16 +1,16 @@
-pipeline {
-    agent { docker { image 'python:3.5.1' } }
-    stages {
-        stage('build') {
-            steps {
-                sh 'python --version'
-                echo "hello world"
-                checkout scm
-                script {
-                    def customimage = docker.build("my-image:${env.BUILD_ID}")
-                }
-            }
-        }
-    }
-}
+node("docker") {
 
+        git url: "https://github.com/nik9839/HDoc.git"
+
+        sh "git rev-parse HEAD > .git/commit-id"
+        def commit_id = readFile('.git/commit-id').trim()
+        println commit_id
+
+        stage "build"
+        def app = docker.build "your-project-name"
+
+        stage "publish"
+        app.push 'master'
+        app.push "${commit_id}"
+
+}
